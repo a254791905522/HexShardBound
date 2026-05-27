@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy — Hex Shard Bound</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            min-height: 100vh;
+            background: #0a0814;
+            color: #a8a0c8;
+            line-height: 1.7;
+        }
+
+        .hex-layer {
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 48% at 50% 0%, rgba(120, 80, 255, 0.2) 0%, transparent 55%),
+                radial-gradient(ellipse 40% 35% at 100% 60%, rgba(0, 230, 210, 0.1) 0%, transparent 50%),
+                linear-gradient(180deg, #0a0814 0%, #100e22 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .hex-layer::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            opacity: 0.06;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='84' viewBox='0 0 48 84'%3E%3Cpath d='M24 56L0 42V14L24 0l24 14v28L24 56z' fill='none' stroke='%2300e6d2' stroke-width='1'/%3E%3C/svg%3E");
+            background-size: 48px 84px;
+        }
+
+        .wrap {
+            position: relative;
+            z-index: 1;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 40px 20px 80px;
+        }
+
+        .masthead {
+            margin-bottom: 36px;
+            padding-bottom: 28px;
+            border-bottom: 2px solid rgba(120, 80, 255, 0.28);
+        }
+
+        .masthead .label {
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #00e6d2;
+            margin-bottom: 12px;
+        }
+
+        .masthead h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #f4f0ff;
+            letter-spacing: -0.02em;
+            margin-bottom: 12px;
+        }
+
+        .masthead .intro {
+            font-size: 1rem;
+            color: #8078a8;
+            max-width: 54ch;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 36px;
+        }
+
+        .summary-cards article {
+            padding: 18px 16px;
+            border-radius: 12px;
+            background: rgba(16, 12, 36, 0.95);
+            border-top: 3px solid #7850ff;
+        }
+
+        .summary-cards article.track {
+            border-top-color: #ff6eb4;
+        }
+
+        .summary-cards h2 {
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #d0c8f0;
+            margin-bottom: 8px;
+        }
+
+        .summary-cards p {
+            font-size: 0.88rem;
+            color: #7068a0;
+        }
+
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section > h2 {
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #00e6d2;
+            margin-bottom: 16px;
+        }
+
+        .data-blocks {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .data-blocks article {
+            padding: 18px 20px;
+            border-radius: 12px;
+            background: rgba(10, 8, 24, 0.9);
+            border: 1px solid rgba(120, 80, 255, 0.2);
+        }
+
+        .data-blocks h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #ece8ff;
+            margin-bottom: 8px;
+        }
+
+        .data-blocks p {
+            font-size: 0.9rem;
+            color: #7068a0;
+        }
+
+        .data-blocks .tag {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .data-blocks .tag.linked {
+            background: rgba(120, 80, 255, 0.25);
+            color: #c8b8ff;
+        }
+
+        .data-blocks .tag.track {
+            background: rgba(255, 110, 180, 0.2);
+            color: #ffb8d8;
+        }
+
+        .choices {
+            list-style: none;
+            display: grid;
+            gap: 12px;
+        }
+
+        .choices li {
+            padding: 14px 18px;
+            border-radius: 10px;
+            background: rgba(8, 6, 20, 0.85);
+            border-left: 3px solid #00e6d2;
+            font-size: 0.9rem;
+            color: #8078a8;
+        }
+
+        .choices li strong {
+            display: block;
+            color: #e0dcff;
+            font-size: 0.92rem;
+            margin-bottom: 4px;
+        }
+
+        .note {
+            font-size: 0.84rem;
+            color: #504878;
+            padding: 16px 18px;
+            border-radius: 10px;
+            background: rgba(8, 6, 20, 0.8);
+            border: 1px dashed rgba(120, 80, 255, 0.3);
+            margin-bottom: 32px;
+        }
+
+        .back {
+            text-align: center;
+        }
+
+        .back a {
+            display: inline-block;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #0a0814;
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            background: linear-gradient(180deg, #5ef0e8 0%, #2a9a90 100%);
+            border: 1px solid rgba(180, 255, 250, 0.35);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .back a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 32px rgba(0, 230, 210, 0.28);
+        }
+
+        @media (max-width: 520px) {
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+            .masthead h1 {
+                font-size: 1.55rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hex-layer" aria-hidden="true"></div>
+
+    <div class="wrap">
+        <header class="masthead">
+            <span class="label">Privacy for players</span>
+            <h1>Hex Shard Bound</h1>
+            <p class="intro">How this hex-grid puzzle app may collect, use, and share information when you play on iOS—written for clarity, not as a contract.</p>
+        </header>
+
+        <div class="summary-cards">
+            <article>
+                <h2>Applies to</h2>
+                <p>Hex Shard Bound on iPhone and iPad (App Store build). This page does not describe unrelated sites or services.</p>
+            </article>
+            <article class="track">
+                <h2>Ads in the app</h2>
+                <p>Recent versions may display advertisements. When an ad loads, third-party ad partners process data under their own policies.</p>
+            </article>
+        </div>
+
+        <section class="section" aria-labelledby="store-label-heading">
+            <h2 id="store-label-heading">What Apple discloses</h2>
+            <div class="data-blocks">
+                <article>
+                    <span class="tag linked">May be linked to you</span>
+                    <h3>Usage data</h3>
+                    <p>The App Store privacy label for Hex Shard Bound indicates that usage-related information may be collected and associated with your identity for app functionality, analytics, or related purposes. Exact categories can change when the app is updated—check the live “App Privacy” section on the store listing.</p>
+                </article>
+                <article>
+                    <span class="tag track">May be used to track you</span>
+                    <h3>Usage data across apps and sites</h3>
+                    <p>The same label states that usage data may be used to track you across other companies’ apps and websites, for example when advertising or measurement partners are involved. Your iOS privacy settings influence what is permitted on your device.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="section" aria-labelledby="on-device-heading">
+            <h2 id="on-device-heading">On your device</h2>
+            <div class="data-blocks">
+                <article>
+                    <h3>Gameplay and progress</h3>
+                    <p>Level state, coins, settings, and similar puzzle progress are typically stored in the app sandbox on your device so you can continue without a separate in-game account.</p>
+                </article>
+                <article>
+                    <h3>No account required</h3>
+                    <p>Core play does not depend on you registering a profile with the game. Data tied to Apple ID for download, updates, or purchases is handled by Apple.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="section" aria-labelledby="choices-heading">
+            <h2 id="choices-heading">Your controls</h2>
+            <ul class="choices">
+                <li>
+                    <strong>Delete local game data</strong>
+                    Remove the app or clear its storage in iOS Settings to wipe sandbox data on that device.
+                </li>
+                <li>
+                    <strong>Limit tracking and personalized ads</strong>
+                    Use Settings → Privacy &amp; Security, including App Tracking Transparency where available, plus Screen Time and content restrictions. Options vary by iOS version and region.
+                </li>
+                <li>
+                    <strong>Review the store label after updates</strong>
+                    When a new version ships, open the App Store listing and read the current “App Privacy” details before assuming practices are unchanged.
+                </li>
+            </ul>
+        </section>
+
+        <p class="note">
+            This summary is informational only and is not legal advice. If it differs from the installed app, the App Store “App Privacy” label, or partner policies shown when an ad appears, those sources govern. Practices may change when features or SDKs are updated. No personal developer contact details or off-product websites are listed here.
+        </p>
+
+        <nav class="back">
+            <a href="index.html">Back to game overview</a>
+        </nav>
+    </div>
+</body>
+
+</html>

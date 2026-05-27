@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hex Shard Bound</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            background:
+                radial-gradient(ellipse 70% 50% at 50% -5%, rgba(120, 80, 255, 0.28) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 45% at 0% 90%, rgba(0, 220, 200, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse 45% 40% at 100% 80%, rgba(255, 90, 180, 0.12) 0%, transparent 45%),
+                linear-gradient(165deg, #0a0814 0%, #12102a 40%, #080612 100%);
+            color: #c4c0e8;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .hex-bg {
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34L28 66zm0-12l20-12V22L28 10 8 22v20l20 12z' fill='none' stroke='%237850ff' stroke-opacity='0.07' stroke-width='1'/%3E%3C/svg%3E");
+            background-size: 56px 100px;
+            mask-image: radial-gradient(ellipse 75% 70% at 50% 40%, black 5%, transparent 78%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .shard-glow {
+            position: fixed;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 230, 210, 0.25) 0%, transparent 70%);
+            top: 12%;
+            left: 8%;
+            animation: float-glow 4s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .shard-glow.alt {
+            left: auto;
+            right: 10%;
+            top: 70%;
+            background: radial-gradient(circle, rgba(180, 100, 255, 0.2) 0%, transparent 70%);
+            animation-delay: -2s;
+        }
+
+        @keyframes float-glow {
+            0%, 100% { opacity: 0.4; transform: translateY(0); }
+            50% { opacity: 0.85; transform: translateY(-12px); }
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: linear-gradient(158deg, rgba(24, 20, 48, 0.97) 0%, rgba(12, 10, 28, 0.99) 100%);
+            border: 1px solid rgba(120, 80, 255, 0.32);
+            border-radius: 22px;
+            padding: 44px 40px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            box-shadow:
+                0 0 0 1px rgba(200, 190, 255, 0.06) inset,
+                0 28px 64px rgba(0, 0, 0, 0.55),
+                0 0 56px rgba(120, 80, 255, 0.12);
+        }
+
+        .icon-wrap {
+            width: 112px;
+            height: 112px;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 22px;
+            background: linear-gradient(145deg, #1e1840 0%, #12102a 55%, #080612 100%);
+            box-shadow:
+                0 12px 32px rgba(0, 0, 0, 0.5),
+                0 0 24px rgba(0, 230, 210, 0.12),
+                inset 0 1px 0 rgba(220, 210, 255, 0.1);
+            border: 1px solid rgba(120, 80, 255, 0.4);
+        }
+
+        .icon-wrap svg {
+            width: 76px;
+            height: 76px;
+        }
+
+        h1 {
+            font-size: 2.15rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 8px;
+            color: #f4f0ff;
+        }
+
+        h1 span.accent {
+            background: linear-gradient(90deg, #00e6d2, #b464ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: 0.96rem;
+            font-weight: 600;
+            color: #00e6d2;
+            margin-bottom: 24px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 26px;
+        }
+
+        .chip {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(30, 24, 60, 0.55);
+            color: #b8b0e0;
+            border: 1px solid rgba(120, 80, 255, 0.35);
+        }
+
+        .chip.shard {
+            background: rgba(0, 80, 75, 0.4);
+            color: #7ef0e8;
+            border-color: rgba(0, 230, 210, 0.35);
+        }
+
+        .lead {
+            text-align: left;
+            color: #9088b8;
+            line-height: 1.75;
+            font-size: 1.04rem;
+            margin-bottom: 26px;
+        }
+
+        .lead strong {
+            color: #ece8ff;
+        }
+
+        .tiles {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 26px;
+        }
+
+        .tile {
+            padding: 16px 12px;
+            border-radius: 14px;
+            background: rgba(10, 8, 24, 0.92);
+            border: 1px solid rgba(0, 230, 210, 0.2);
+            text-align: center;
+        }
+
+        .tile .emoji {
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+
+        .tile h3 {
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #b464ff;
+            margin-bottom: 6px;
+        }
+
+        .tile p {
+            font-size: 0.78rem;
+            color: #7068a0;
+            line-height: 1.45;
+        }
+
+        .how-to {
+            text-align: left;
+            margin-bottom: 26px;
+            padding: 20px 22px;
+            border-radius: 16px;
+            background: rgba(8, 6, 20, 0.92);
+            border: 1px solid rgba(120, 80, 255, 0.22);
+        }
+
+        .how-to h2 {
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #00e6d2;
+            margin-bottom: 14px;
+        }
+
+        .how-to ol {
+            margin: 0;
+            padding-left: 20px;
+            color: #8078a8;
+            font-size: 0.92rem;
+            line-height: 1.65;
+        }
+
+        .how-to li {
+            margin-bottom: 8px;
+        }
+
+        .how-to li strong {
+            color: #e0dcff;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            text-align: left;
+            margin-bottom: 26px;
+        }
+
+        .feature-card {
+            background: rgba(6, 4, 18, 0.92);
+            border: 1px solid rgba(100, 70, 180, 0.22);
+            border-radius: 14px;
+            padding: 16px;
+            transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(0, 230, 210, 0.38);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+        }
+
+        .feature-card h3 {
+            font-size: 0.84rem;
+            color: #00e6d2;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            font-size: 0.87rem;
+            color: #7068a0;
+            line-height: 1.55;
+        }
+
+        .cta {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 16px 36px;
+            font-size: 1.02rem;
+            font-weight: 700;
+            color: #0a0814;
+            text-decoration: none;
+            border-radius: 14px;
+            background: linear-gradient(180deg, #5ef0e8 0%, #2a9a90 100%);
+            box-shadow: 0 8px 28px rgba(0, 230, 210, 0.32);
+            border: 2px solid rgba(180, 255, 250, 0.35);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 36px rgba(0, 230, 210, 0.42);
+        }
+
+        .foot {
+            margin-top: 26px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(100, 70, 180, 0.25);
+            font-size: 0.88rem;
+            color: #5850a0;
+        }
+
+        .foot a {
+            color: #b464ff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .foot a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 560px) {
+            .tiles {
+                grid-template-columns: 1fr;
+            }
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                padding: 32px 22px;
+            }
+            h1 {
+                font-size: 1.65rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hex-bg" aria-hidden="true"></div>
+    <div class="shard-glow" aria-hidden="true"></div>
+    <div class="shard-glow alt" aria-hidden="true"></div>
+
+    <div class="container">
+        <div class="icon-wrap" aria-hidden="true">
+            <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <polygon points="32,6 52,18 52,42 32,54 12,42 12,18" fill="#1a1438" stroke="#7850ff" stroke-width="1.2"/>
+                <polygon points="32,14 44,22 44,38 32,46 20,38 20,22" fill="#12102a" stroke="#00e6d2" stroke-width="0.8" opacity="0.9"/>
+                <polygon points="32,22 38,26 38,34 32,38 26,34 26,26" fill="#7850ff" opacity="0.5"/>
+                <line x1="32" y1="22" x2="32" y2="14" stroke="#00e6d2" stroke-width="1.5" stroke-dasharray="2 2" opacity="0.6"/>
+                <circle cx="32" cy="30" r="4" fill="#00e6d2" opacity="0.9"/>
+                <path d="M8 50 L16 46 L20 54 L12 58 Z" fill="#b464ff" opacity="0.4"/>
+                <path d="M48 52 L56 48 L58 56 L50 60 Z" fill="#00e6d2" opacity="0.35"/>
+            </svg>
+        </div>
+
+        <h1>Hex Shard <span class="accent">Bound</span></h1>
+        <p class="tagline">Think · leap · shatter</p>
+
+        <div class="chips">
+            <span class="chip">Free</span>
+            <span class="chip">iOS 15+</span>
+            <span class="chip">Puzzle</span>
+            <span class="chip shard">iPhone &amp; iPad</span>
+        </div>
+
+        <p class="lead">
+            <strong>Every step fractures the grid beneath you.</strong> Hex Shard Bound is a tactical hexagonal puzzle: tap to bound across neighboring tiles, shatter the path behind you, and plan several moves ahead to clear enough of the board and unlock the escape portal. There is no turning back—only foresight wins.
+        </p>
+
+        <div class="tiles">
+            <div class="tile">
+                <div class="emoji" aria-hidden="true">💎</div>
+                <h3>Shattering steps</h3>
+                <p>Normal tiles crumble into the abyss the moment you leap away.</p>
+            </div>
+            <div class="tile">
+                <div class="emoji" aria-hidden="true">🌀</div>
+                <h3>Escape portal</h3>
+                <p>Smash a required share of the board before the exit opens.</p>
+            </div>
+            <div class="tile">
+                <div class="emoji" aria-hidden="true">🧊</div>
+                <h3>Element tiles</h3>
+                <p>Thick tiles, slippery ice, and reinforced walls change every route.</p>
+            </div>
+        </div>
+
+        <section class="how-to">
+            <h2>The art of the bound</h2>
+            <ol>
+                <li><strong>Leap to a neighbor</strong> — Tap any adjacent hex to bound forward; fractured tiles cannot be crossed again.</li>
+                <li><strong>Clear the quota</strong> — Destroy enough of the grid to trigger the escape sequence at the exit tile.</li>
+                <li><strong>Read the terrain</strong> — Thick tiles survive an extra jump; ice slides you until you hit a wall or fall off.</li>
+                <li><strong>Spend your coins</strong> — Undo, extra moves, bonus time, or skip a nightmare level when you are cornered.</li>
+            </ol>
+        </section>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Crafted levels</h3>
+                <p>Hand-tuned stages that ramp up logic, not luck.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Coin economy</h3>
+                <p>Earn currency in play and invest in game-changing boosters.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Rule-bending power-ups</h3>
+                <p>Undo a fatal leap, stretch your move or time limit, or skip ahead.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Dynamic obstacles</h3>
+                <p>Frictionless ice and reinforced walls force new strategies.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Pure tactics</h3>
+                <p>No reflex spam—map the grid, then commit to your path.</p>
+            </div>
+            <div class="feature-card">
+                <h3>One-touch play</h3>
+                <p>Easy to pick up on iPhone and iPad; deep to master on harder boards.</p>
+            </div>
+        </div>
+
+        <a href="https://apps.apple.com/us/app/hex-shard-bound/id6767519710?uo=4" class="cta" target="_blank" rel="noopener noreferrer">Download on the App Store</a>
+
+        <div class="foot">
+            <a href="privacy.html">Privacy overview</a>
+        </div>
+    </div>
+</body>
+
+</html>
